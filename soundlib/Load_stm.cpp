@@ -487,9 +487,11 @@ bool CSoundFile::ReadSTX(FileReader &file, ModLoadingFlags loadFlags)
 
 	std::vector<uint16le> patternOffsets, sampleOffsets;
 	file.Seek(fileHeader.patTableOffset << 4);
-	file.ReadVector(patternOffsets, fileHeader.numPatterns);
+	if(!file.ReadVector(patternOffsets, fileHeader.numPatterns))
+		return false;
 	file.Seek(fileHeader.smpTableOffset << 4);
-	file.ReadVector(sampleOffsets, fileHeader.numSamples);
+	if(!file.ReadVector(sampleOffsets, fileHeader.numSamples))
+		return false;
 
 	// Read order list
 	file.Seek((fileHeader.chnTableOffset << 4) + 32);

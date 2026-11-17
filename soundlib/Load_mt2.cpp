@@ -1075,7 +1075,8 @@ bool CSoundFile::ReadMT2(FileReader &file, ModLoadingFlags loadFlags)
 			chunk.ReadStruct(insHeader);
 
 			std::vector<MT2Group> groups;
-			file.ReadVector(groups, insHeader.numSamples);
+			if(!file.ReadVector(groups, insHeader.numSamples))
+				groups.assign(insHeader.numSamples, MT2Group{});
 
 			ModInstrument *mptIns = Instruments[ins + 1];
 			// Instruments with plugin assignments never play samples at the same time!

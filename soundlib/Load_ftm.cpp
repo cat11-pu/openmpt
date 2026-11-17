@@ -193,7 +193,8 @@ bool CSoundFile::ReadFTM(FileReader &file, ModLoadingFlags loadFlags)
 		events.push_back(InstrumentSynth::Event::FTM_SetInterrupt(uint16_max, uint8_max));
 		
 		std::vector<FTMScriptItem> items;
-		file.ReadVector(items, numLines);
+		if(!file.ReadVector(items, numLines))
+			return false;
 		for(uint16 i = 0; i < numLines; i++)
 		{
 			const auto &item = items[i];

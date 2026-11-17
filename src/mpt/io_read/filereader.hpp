@@ -280,9 +280,18 @@ bool ReadArray(TFileCursor & f, std::array<T, destSize> & destArray) {
 template <typename T, typename TFileCursor>
 bool ReadVector(TFileCursor & f, std::vector<T> & destVector, size_t destSize) {
 	static_assert(mpt::is_binary_safe<T>::value);
-	destVector.resize(destSize);
-	if (!f.CanRead(sizeof(T) * destSize)) {
+	if(destSize > destVector.max_size() / sizeof(T)) {
+		destVector.clear();
 		return false;
+	}
+	const std::size_t destBytes = sizeof(T) * destSize;
+	if(!f.CanRead(destBytes)) {
+		destVector.clear();
+		return false;
+	}
+	destVector.resize(destSize);
+	if(destSize == 0) {
+		return true;
 	}
 	f.ReadRaw(mpt::as_raw_memory(destVector));
 	return true;

@@ -930,8 +930,8 @@ bool CSoundFile::ReadMED(FileReader &file, ModLoadingFlags loadFlags)
 	std::vector<uint32be> instrOffsets;
 	if(fileHeader.sampleArrOffset)
 	{
-		file.Seek(fileHeader.sampleArrOffset);
-		file.ReadVector(instrOffsets, songHeader.numSamples);
+		if(!file.Seek(fileHeader.sampleArrOffset) || !file.ReadVector(instrOffsets, songHeader.numSamples))
+			return false;
 	} else if(songHeader.numSamples > 0)
 	{
 		return false;

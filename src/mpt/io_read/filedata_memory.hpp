@@ -65,7 +65,7 @@ public:
 	}
 
 	mpt::byte_span Read(pos_type pos, mpt::byte_span dst) const override {
-		if (pos >= streamLength) {
+		if (dst.empty() || pos >= streamLength) {
 			return dst.first(0);
 		}
 		pos_type avail = std::min(streamLength - pos, static_cast<pos_type>(dst.size()));
