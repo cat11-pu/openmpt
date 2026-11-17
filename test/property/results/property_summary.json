@@ -1,0 +1,47 @@
+{
+  "by_category": {
+    "cycle_reference": {
+      "cases": 50,
+      "failed": 0,
+      "loaded": 50,
+      "passed": 50,
+      "rejected": 0
+    },
+    "huge_sample_count": {
+      "cases": 50,
+      "failed": 0,
+      "loaded": 47,
+      "passed": 50,
+      "rejected": 3
+    },
+    "invalid_pattern": {
+      "cases": 50,
+      "failed": 0,
+      "loaded": 47,
+      "passed": 50,
+      "rejected": 3
+    },
+    "truncation": {
+      "cases": 50,
+      "failed": 0,
+      "loaded": 11,
+      "passed": 50,
+      "rejected": 39
+    }
+  },
+  "cases": 200,
+  "crashes": 0,
+  "error_callback_events": 214,
+  "failed": 0,
+  "guards_intact": true,
+  "leaks": 0,
+  "loaded": 155,
+  "log_callback_events": 214,
+  "max_rendered_frames_per_case": 36424,
+  "passed": 200,
+  "property_violations": 0,
+  "rejected": 45,
+  "timeouts": 0,
+  "total_rendered_frames": 5481072,
+  "undefined_behavior": 0
+}

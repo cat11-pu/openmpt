@@ -1,0 +1,24 @@
+{
+  "category": "invalid_pattern",
+  "description": "XM pattern count and order reference set invalid",
+  "format": "xm",
+  "id": "case-005-invalid_pattern",
+  "mutation_offset": 70,
+  "outcome": "safely rejected",
+  "runner": {
+    "create_error": 357,
+    "error_events": 1,
+    "frames": 0,
+    "guard_ok": true,
+    "loaded": false,
+    "log_events": 1,
+    "probe": 0,
+    "probe_error": 0,
+    "probe_mismatch": false,
+    "repeated_loads": 0,
+    "success": true
+  },
+  "sha256": "0f0b10eedde9de8dc0645bfe016813f73d2b96a6923536aad5ba1710fc4f77b1",
+  "size": 6279,
+  "source": "test/test.xm"
+}

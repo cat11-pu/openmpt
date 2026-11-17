@@ -1,0 +1,24 @@
+{
+  "category": "cycle_reference",
+  "description": "XM order list repeats pattern 0 and restarts at order 0",
+  "format": "xm",
+  "id": "case-007-cycle_reference",
+  "mutation_offset": 64,
+  "outcome": "bounded render",
+  "runner": {
+    "create_error": 0,
+    "error_events": 1,
+    "frames": 36424,
+    "guard_ok": true,
+    "loaded": true,
+    "log_events": 1,
+    "probe": 1,
+    "probe_error": 0,
+    "probe_mismatch": false,
+    "repeated_loads": 3,
+    "success": true
+  },
+  "sha256": "a6dcee989e6c50ccb1968a9149b7bbe73ea8aceccac1e5e91350369d8c5b5c5b",
+  "size": 6279,
+  "source": "test/test.xm"
+}

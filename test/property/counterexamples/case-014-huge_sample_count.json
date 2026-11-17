@@ -1,0 +1,24 @@
+{
+  "category": "huge_sample_count",
+  "description": "IT/MPTM sample count set to 65535",
+  "format": "it",
+  "id": "case-014-huge_sample_count",
+  "mutation_offset": 36,
+  "outcome": "safely rejected",
+  "runner": {
+    "create_error": 357,
+    "error_events": 1,
+    "frames": 0,
+    "guard_ok": true,
+    "loaded": false,
+    "log_events": 1,
+    "probe": 0,
+    "probe_error": 0,
+    "probe_mismatch": false,
+    "repeated_loads": 0,
+    "success": true
+  },
+  "sha256": "161926600b06df256bc5ace07499cbabec5bd25bb3837df7887885e41ae1292f",
+  "size": 12323,
+  "source": "test/test.mptm"
+}

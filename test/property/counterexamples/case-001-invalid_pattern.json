@@ -1,0 +1,24 @@
+{
+  "category": "invalid_pattern",
+  "description": "invalid MOD pattern cells in pattern 0",
+  "format": "mod",
+  "id": "case-001-invalid_pattern",
+  "mutation_offset": 1084,
+  "outcome": "bounded render",
+  "runner": {
+    "create_error": 0,
+    "error_events": 1,
+    "frames": 11520,
+    "guard_ok": true,
+    "loaded": true,
+    "log_events": 1,
+    "probe": 1,
+    "probe_error": 0,
+    "probe_mismatch": false,
+    "repeated_loads": 3,
+    "success": true
+  },
+  "sha256": "a26d9b3267f379903104da01a751d404a70f665a00d846d3928da5bde88912dc",
+  "size": 5400,
+  "source": "test/test.mod"
+}

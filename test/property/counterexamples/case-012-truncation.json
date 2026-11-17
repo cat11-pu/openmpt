@@ -1,0 +1,24 @@
+{
+  "category": "truncation",
+  "description": "truncate before byte 38",
+  "format": "it",
+  "id": "case-012-truncation",
+  "mutation_offset": 38,
+  "outcome": "safely rejected",
+  "runner": {
+    "create_error": 357,
+    "error_events": 1,
+    "frames": 0,
+    "guard_ok": true,
+    "loaded": false,
+    "log_events": 1,
+    "probe": 0,
+    "probe_error": 0,
+    "probe_mismatch": false,
+    "repeated_loads": 0,
+    "success": true
+  },
+  "sha256": "4dac9c1be3a98c06268abfed0f5b3a283cd0fbe3b0665faa6fb086256c4124c2",
+  "size": 38,
+  "source": "test/test.mptm"
+}

@@ -1,0 +1,12 @@
+{
+  "candidate": "/home/cat/gsb/uid3952/test/property/bin/module_property_runner_asan",
+  "channels": 2,
+  "compared_samples": 5000000,
+  "files": 50,
+  "matched": 50,
+  "mismatched": 0,
+  "reference": "/usr/lib/x86_64-linux-gnu/libopenmpt.so.0",
+  "sample_format": "s16le",
+  "sample_rate": 48000,
+  "target_frames_per_file": 50000
+}

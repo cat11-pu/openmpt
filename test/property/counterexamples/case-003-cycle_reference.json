@@ -1,0 +1,24 @@
+{
+  "category": "cycle_reference",
+  "description": "MOD order list and B00 pattern jump form a cycle",
+  "format": "mod",
+  "id": "case-003-cycle_reference",
+  "mutation_offset": 2094,
+  "outcome": "bounded render",
+  "runner": {
+    "create_error": 0,
+    "error_events": 1,
+    "frames": 36424,
+    "guard_ok": true,
+    "loaded": true,
+    "log_events": 1,
+    "probe": 1,
+    "probe_error": 0,
+    "probe_mismatch": false,
+    "repeated_loads": 3,
+    "success": true
+  },
+  "sha256": "3795f3200d45b1d073f163a1b42b472916e2add7b3821d5fe31ec96bd82cf8cb",
+  "size": 5400,
+  "source": "test/test.mod"
+}

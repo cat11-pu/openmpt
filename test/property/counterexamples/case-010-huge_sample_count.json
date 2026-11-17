@@ -1,0 +1,24 @@
+{
+  "category": "huge_sample_count",
+  "description": "S3M sample count set to 65535",
+  "format": "s3m",
+  "id": "case-010-huge_sample_count",
+  "mutation_offset": 34,
+  "outcome": "safely rejected",
+  "runner": {
+    "create_error": 357,
+    "error_events": 1,
+    "frames": 0,
+    "guard_ok": true,
+    "loaded": false,
+    "log_events": 1,
+    "probe": 0,
+    "probe_error": 0,
+    "probe_mismatch": false,
+    "repeated_loads": 0,
+    "success": true
+  },
+  "sha256": "5f2e073420ea4e09e2f31f7e44f54276a1cce9e80df9b0a30b7428b18fc16d9e",
+  "size": 880,
+  "source": "test/test.s3m"
+}
