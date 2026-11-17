@@ -17,7 +17,89 @@
 #include "MixerInterface.h"
 #include "Paula.h"
 
+#if defined(MPT_WANT_ARCH_INTRINSICS_X86_SSE2) && defined(MPT_ARCH_INTRINSICS_X86_SSE2)
+#if MPT_COMPILER_MSVC
+#include <intrin.h>
+#endif
+#include <emmintrin.h>
+#if defined(MPT_ARCH_QUIRK_SSE2_UNALIGNED_LOAD_STORE_REQUIRES_IMMINTRIN_H)
+#include <immintrin.h>
+#endif
+#endif
+
 OPENMPT_NAMESPACE_BEGIN
+
+#if defined(MPT_WANT_ARCH_INTRINSICS_X86_SSE2) && defined(MPT_ARCH_INTRINSICS_X86_SSE2)
+
+namespace MixerIntrinsics
+{
+
+// Replicate C++ signed integer division by a power of two, which truncates towards zero.
+MPT_ATTR_ALWAYSINLINE MPT_INLINE_FORCE int32 DividePow2(int32 value, int shift)
+{
+	return (value + ((value >> 31) & ((1 << shift) - 1))) >> shift;
+}
+
+MPT_ATTR_ALWAYSINLINE MPT_INLINE_FORCE int32 HorizontalSum(__m128i value)
+{
+	value = _mm_add_epi32(value, _mm_shuffle_epi32(value, _MM_SHUFFLE(1, 0, 3, 2)));
+	value = _mm_add_epi32(value, _mm_shuffle_epi32(value, _MM_SHUFFLE(2, 3, 0, 1)));
+	return _mm_cvtsi128_si32(value);
+}
+
+MPT_ATTR_ALWAYSINLINE MPT_INLINE_FORCE int32 Dot8(const int16 *samples, const int16 *coeffs)
+{
+	const __m128i s = _mm_loadu_si128(reinterpret_cast<const __m128i *>(samples));
+	const __m128i c = _mm_loadu_si128(reinterpret_cast<const __m128i *>(coeffs));
+	return HorizontalSum(_mm_madd_epi16(s, c));
+}
+
+// Deinterleave eight consecutive stereo sample frames into eight left and eight right samples.
+MPT_ATTR_ALWAYSINLINE MPT_INLINE_FORCE void Deinterleave8Stereo(const int16 *frames, __m128i &left, __m128i &right)
+{
+	const __m128i a = _mm_loadu_si128(reinterpret_cast<const __m128i *>(frames));
+	const __m128i b = _mm_loadu_si128(reinterpret_cast<const __m128i *>(frames + 8));
+	const __m128i u0 = _mm_unpacklo_epi16(a, b);
+	const __m128i u1 = _mm_unpackhi_epi16(a, b);
+	const __m128i v0 = _mm_unpacklo_epi16(u0, u1);
+	const __m128i v1 = _mm_unpackhi_epi16(u0, u1);
+	left = _mm_unpacklo_epi16(v0, v1);
+	right = _mm_unpackhi_epi16(v0, v1);
+}
+
+MPT_ATTR_ALWAYSINLINE MPT_INLINE_FORCE __m128i Widen8Int8(const int8 *samples)
+{
+	// Sign-extend eight int8 samples and scale them by 256, matching IntToIntTraits<int8>.
+	const __m128i bytes = _mm_loadl_epi64(reinterpret_cast<const __m128i *>(samples));
+	const __m128i words = _mm_srai_epi16(_mm_unpacklo_epi8(bytes, bytes), 8);
+	return _mm_slli_epi16(words, 8);
+}
+
+MPT_ATTR_ALWAYSINLINE MPT_INLINE_FORCE int32 Dot8Int8(const int8 *samples, const int16 *coeffs)
+{
+	return HorizontalSum(_mm_madd_epi16(Widen8Int8(samples), _mm_loadu_si128(reinterpret_cast<const __m128i *>(coeffs))));
+}
+
+MPT_ATTR_ALWAYSINLINE MPT_INLINE_FORCE void Dot8Int8Stereo(const int8 *frames, const int16 *coeffs, int32 &leftResult, int32 &rightResult)
+{
+	const __m128i bytes = _mm_loadu_si128(reinterpret_cast<const __m128i *>(frames));
+	const __m128i zero = _mm_setzero_si128();
+	const __m128i lo = _mm_unpacklo_epi8(bytes, zero);
+	const __m128i hi = _mm_unpackhi_epi8(bytes, zero);
+	const __m128i u0 = _mm_unpacklo_epi16(lo, hi);
+	const __m128i u1 = _mm_unpackhi_epi16(lo, hi);
+	const __m128i v0 = _mm_unpacklo_epi16(u0, u1);
+	const __m128i v1 = _mm_unpackhi_epi16(u0, u1);
+	const __m128i left = _mm_slli_epi16(_mm_unpacklo_epi16(v0, v1), 8);
+	const __m128i right = _mm_slli_epi16(_mm_unpackhi_epi16(v0, v1), 8);
+	const __m128i c = _mm_loadu_si128(reinterpret_cast<const __m128i *>(coeffs));
+	leftResult = HorizontalSum(_mm_madd_epi16(left, c));
+	rightResult = HorizontalSum(_mm_madd_epi16(right, c));
+}
+
+} // namespace MixerIntrinsics
+
+#endif
 
 template<int channelsOut, int channelsIn, typename out, typename in, size_t mixPrecision>
 struct IntToIntTraits : public MixerTraits<channelsOut, channelsIn, out, in>
@@ -176,6 +258,39 @@ struct PolyphaseInterpolation
 	{
 		static_assert(static_cast<int>(Traits::numChannelsIn) <= static_cast<int>(Traits::numChannelsOut), "Too many input channels");
 		const SINC_TYPE *lut = sinc + ((posLo >> (32 - SINC_PHASES_BITS)) & SINC_MASK) * SINC_WIDTH;
+
+#if defined(MPT_WANT_ARCH_INTRINSICS_X86_SSE2) && defined(MPT_ARCH_INTRINSICS_X86_SSE2)
+		if constexpr(std::is_same<typename Traits::input_t, int16>::value)
+		{
+			if constexpr(Traits::numChannelsIn == 1)
+			{
+				outSample[0] = MixerIntrinsics::DividePow2(MixerIntrinsics::Dot8(inBuffer - 3, lut), SINC_QUANTSHIFT);
+				return;
+			} else if constexpr(Traits::numChannelsIn == 2)
+			{
+				__m128i left, right;
+				MixerIntrinsics::Deinterleave8Stereo(inBuffer - 3 * 2, left, right);
+				const __m128i coeffs = _mm_loadu_si128(reinterpret_cast<const __m128i *>(lut));
+				outSample[0] = MixerIntrinsics::DividePow2(MixerIntrinsics::HorizontalSum(_mm_madd_epi16(left, coeffs)), SINC_QUANTSHIFT);
+				outSample[1] = MixerIntrinsics::DividePow2(MixerIntrinsics::HorizontalSum(_mm_madd_epi16(right, coeffs)), SINC_QUANTSHIFT);
+				return;
+			}
+		} else if constexpr(std::is_same<typename Traits::input_t, int8>::value)
+		{
+			if constexpr(Traits::numChannelsIn == 1)
+			{
+				outSample[0] = MixerIntrinsics::DividePow2(MixerIntrinsics::Dot8Int8(inBuffer - 3, lut), SINC_QUANTSHIFT);
+				return;
+			} else if constexpr(Traits::numChannelsIn == 2)
+			{
+				int32 left, right;
+				MixerIntrinsics::Dot8Int8Stereo(inBuffer - 3 * 2, lut, left, right);
+				outSample[0] = MixerIntrinsics::DividePow2(left, SINC_QUANTSHIFT);
+				outSample[1] = MixerIntrinsics::DividePow2(right, SINC_QUANTSHIFT);
+				return;
+			}
+		}
+#endif
 
 		for(int i = 0; i < Traits::numChannelsIn; i++)
 		{
