@@ -1720,6 +1720,7 @@ LIBOPENMPTTEST_CXX_SOURCES += \
  test/mpt_tests_endian.cpp \
  test/mpt_tests_format.cpp \
  test/mpt_tests_io.cpp \
+ test/mpt_tests_loop.cpp \
  test/mpt_tests_parse.cpp \
  test/mpt_tests_random.cpp \
  test/mpt_tests_string.cpp \
@@ -1958,6 +1959,7 @@ install: $(OUTPUTS)
 	$(INSTALL_DATA) libopenmpt/libopenmpt_stream_callbacks_file_posix.h $(DESTDIR)$(PREFIX)/include/libopenmpt/libopenmpt_stream_callbacks_file_posix.h
 	$(INSTALL_DATA) libopenmpt/libopenmpt_stream_callbacks_file_posix_lfs64.h $(DESTDIR)$(PREFIX)/include/libopenmpt/libopenmpt_stream_callbacks_file_posix_lfs64.h
 	$(INSTALL_DATA) libopenmpt/libopenmpt.hpp $(DESTDIR)$(PREFIX)/include/libopenmpt/libopenmpt.hpp
+	$(INSTALL_DATA) libopenmpt/libopenmpt_loop.hpp $(DESTDIR)$(PREFIX)/include/libopenmpt/libopenmpt_loop.hpp
 	$(INSTALL_DATA) libopenmpt/libopenmpt_ext.h $(DESTDIR)$(PREFIX)/include/libopenmpt/libopenmpt_ext.h
 	$(INSTALL_DATA) libopenmpt/libopenmpt_ext.hpp $(DESTDIR)$(PREFIX)/include/libopenmpt/libopenmpt_ext.hpp
 	$(INSTALL_MAKE_DIR) $(DESTDIR)$(PREFIX)/lib/pkgconfig

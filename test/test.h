@@ -23,6 +23,8 @@ void PrintFooter();
 
 void DoTests();
 
+void TestLoop();
+
 } // namespace Test
 
 OPENMPT_NAMESPACE_END

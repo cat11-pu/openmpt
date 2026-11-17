@@ -172,6 +172,7 @@ MPT_ATTR_NOINLINE MPT_DECL_NOINLINE static void TestPCnoteSerialization();
 MPT_ATTR_NOINLINE MPT_DECL_NOINLINE static void TestLoadSaveFile();
 MPT_ATTR_NOINLINE MPT_DECL_NOINLINE static void TestEditing();
 MPT_ATTR_NOINLINE MPT_DECL_NOINLINE static void TestMIDIMacroParser();
+MPT_ATTR_NOINLINE MPT_DECL_NOINLINE void TestLoop();
 
 
 
@@ -505,6 +506,7 @@ void DoTests()
 	DO_TEST(TestSampleConversion);
 	DO_TEST(TestITCompression);
 	DO_TEST(TestMIDIMacroParser);
+	DO_TEST(TestLoop);
 
 	// slower tests, require opening a CModDoc
 	DO_TEST(TestPCnoteSerialization);
